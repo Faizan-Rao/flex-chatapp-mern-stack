@@ -1,45 +1,52 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react';
+import Chat from './components/Chat';
+import React from 'react'
+import './App.css';
 import io from 'socket.io-client'
-import './App.css'
 const socket = io('http://localhost:3001')
 
-function App() {
-  const [sendMessage, setSendMessage] = useState("")
-  const [allMessages, setAllMessage] = useState<string[]>([])
-  
+const App = () => {
 
-  const sendMessageHandler =  async () => {
-    socket.emit("send_message", sendMessage)
-    if(sendMessage !== "")
-      setAllMessage((list)=>[...list, sendMessage])
-    
-  }
+  type InputEvent = React.ChangeEvent<HTMLInputElement>;
+  type ClickEvent = React.MouseEvent<HTMLButtonElement>;
 
-  useEffect(() => {
-    socket.on("recieve_message", data => {
-      setAllMessage(list => [...list, data ])
-     console.log(data)
-    })
-    return ()=>{
-      socket.off("recieve_message")
+  const [User, setUser] = useState<string>("");
+  const [roomID, setRoomID] = useState<string>("");
+  const [joined, setJoined] = useState<boolean>(false);
+
+  const onChangeUser = (event: InputEvent) => setUser(event.target.value);
+  const onChangeRoomID = (event: InputEvent) => setRoomID(event.target.value);
+  const joinHandler = (event: ClickEvent) => {
+    event.preventDefault()
+    if (User !== "" && roomID !== "") {
+      socket.emit("new-user-joined", {
+        userName: User,
+        roomID
+      });
+      setJoined(true);
     }
-  }, [socket])
-
-
+  }
 
   return (
     <>
-      <input type="text" name="message" id="message" onChange={(event) => {
-        setSendMessage(event.target.value)
-      }} />
-      <div>{
-        allMessages.map((e, i)=>{
-          return (<p key={i}>{e}</p>)
-        })
-      }</div>
-      <button onClick={sendMessageHandler}>Send Message</button>
+      {
+        (!joined) ?
+          (
+            <div className='main-container'>
+              <form className='join-form'>
+                <input className='input-field' placeholder='Join With Name' onChange={onChangeUser} type="text" name="name" id="name" />
+                <input className='input-field' placeholder='Room ID' onChange={onChangeRoomID} type="number" name="roomId" id="roomId" />
+                <button className='btn' onClick={joinHandler}>Join Room</button>
+              </form>
+            </div>
+          )
+          :
+          (
+            <Chat User={User} RoomID={roomID} socket={socket} />
+          )
+      }
     </>
   )
 }
 
-export default App
+export default App;
