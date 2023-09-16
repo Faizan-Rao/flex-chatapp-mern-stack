@@ -67,13 +67,10 @@ const Chat = ({ User, RoomID, socket }: propsType) => {
                         allMessages.map((e, i) => {
                             return (
                                 <>
-                                    {
-
-
-                                    }
                                     <p className={`${((e.position === "right") ? "right" : "left")}`} key={i}>
-                                        <p className='heading'>{e.userName}</p>
-                                        <span className='message'>{e.message}</span>
+                                        <p className='heading'>{e.userName} (<span>{e.hour + ":" + e.min}</span>)</p>
+                                       
+                                        <span className='message'>{e.message} </span>
                                     </p>
                                 </>
                             )
