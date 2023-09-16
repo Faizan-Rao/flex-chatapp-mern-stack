@@ -32,10 +32,11 @@ const App = () => {
       {
         (!joined) ?
           (
-            <div className='main-container'>
+            <div className='main-container-form'>
               <form className='join-form'>
+                <h1>Join Flex Chat</h1>
                 <input className='input-field' placeholder='Join With Name' onChange={onChangeUser} type="text" name="name" id="name" />
-                <input className='input-field' placeholder='Room ID' onChange={onChangeRoomID} type="number" name="roomId" id="roomId" />
+                <input className='input-field' placeholder='Room ID' onChange={onChangeRoomID} type="text" name="roomId" id="roomId" />
                 <button className='btn' onClick={joinHandler}>Join Room</button>
               </form>
             </div>

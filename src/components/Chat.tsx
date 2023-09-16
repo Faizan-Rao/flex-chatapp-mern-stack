@@ -34,6 +34,7 @@ const Chat = ({ User, RoomID, socket }: propsType) => {
             socket.emit("send_message", sendMessageData);
 
             setAllMessage((list) => [...list, sendMessageData]);
+            setSendMessage("")
 
         }
     };
@@ -70,7 +71,7 @@ const Chat = ({ User, RoomID, socket }: propsType) => {
 
 
                                     }
-                                    <p className={`${(e.position ? "right" : "left")}`} key={i}>
+                                    <p className={`${((e.position === "right") ? "right" : "left")}`} key={i}>
                                         <p className='heading'>{e.userName}</p>
                                         <span className='message'>{e.message}</span>
                                     </p>
@@ -80,21 +81,18 @@ const Chat = ({ User, RoomID, socket }: propsType) => {
                     }
                 </div>
                 <div className='footer'>
-                    <input type='text' className='input-field' placeholder='Enter Your Message' name="message" id="message"
+                    <input type='text' className='input-field' placeholder='Enter Your Message' name="message" id="message" value={sendMessage}
                         onChange={(event) => {
                             setSendMessage(event.target.value);
                         }}
                         onKeyDown={(event) => {
                             if (event.key === 'Enter') {
                                 sendMessageHandler()
-                                event.currentTarget.value = ""
+                                setSendMessage("")
                             }
                         }}
                     />
-                    <button className='btn' onClick={(e) => {
-                        sendMessageHandler()
-                        e.currentTarget.value = ""
-                    }} >
+                    <button className='btn' onClick={sendMessageHandler} >
                         Send
                     </button>
                 </div>
